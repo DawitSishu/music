@@ -7,6 +7,11 @@ interface SongsState {
   error: string | null;
 }
 
+interface UpdateSongPayload {
+  id: string;
+  updatedSong: Song;
+}
+
 const initialState: SongsState = {
   songs: [],
   loading: false,
@@ -53,7 +58,7 @@ const songsSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
-    updateSongStart(state) {
+    updateSongStart(state, action: PayloadAction<UpdateSongPayload>) { 
       state.loading = true;
       state.error = null;
     },
@@ -83,7 +88,7 @@ export const {
   deleteSongStart,
   deleteSongSuccess,
   deleteSongFailure,
-  updateSongStart,
+  updateSongStart,  
   updateSongSuccess,
   updateSongFailure,
 } = songsSlice.actions;

@@ -1,57 +1,111 @@
+import { takeLatest, call, put, all } from 'redux-saga/effects';
 import {
+  deleteSongAPI,
   getSongsAPI,
-  getSongByIdAPI,
   createSongAPI,
   updateSongAPI,
-  deleteSongByIdAPI,
-} from "../../services/ApiHandler";
-import { setSongSlice } from "../songSlice";
+} from '../../services/ApiHandler';
+
 import {
-  addSongSlice,
-  deleteSongSlice,
-  editSongSlice,
-  getSongsSlice,
-} from "../songsSlice";
-import {
-  CREATE_SONG,
-  DELETE_SONG_BY_ID,
-  GET_SONGS,
-  GET_SONG_BY_ID,
-  UPDATE_SONG_BY_ID,
-} from "../../Types/SongTypes";
-import { put, takeEvery } from "redux-saga/effects";
+  getSongsStart,
+  getSongsSuccess,
+  getSongsFailure,
+  addSongStart,
+  addSongSuccess,
+  addSongFailure,
+  deleteSongStart,
+  deleteSongSuccess,
+  deleteSongFailure,
+  updateSongStart,
+  updateSongSuccess,
+  updateSongFailure,
+} from '../songsSlice';
 
-export function* getUsersSaga(): Generator<any, void, unknown> {
-  const songs: any = yield getSongsAPI();
-  yield put(getSongsSlice(songs.data));
+function* handleDeleteSong(action: ReturnType<typeof deleteSongStart>): Generator<any, void, any> {
+  try {
+    if (action.payload) {
+      yield call(deleteSongAPI, action.payload);
+      yield put(deleteSongSuccess(action.payload));
+    } else {
+      yield put(deleteSongFailure('Delete action payload is missing'));
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      yield put(deleteSongFailure(error.message));
+    } else {
+      yield put(deleteSongFailure('An unknown error occurred'));
+    }
+  }
 }
 
-export function* getUserByIdSaga(action: any): Generator<any, void, unknown> {
-  yield getSongByIdAPI(action.id);
-  yield put(setSongSlice(action.id));
+function* handleAddSong(action: ReturnType<typeof addSongStart>): Generator<any, void, any> {
+  try {
+    if (action.payload) {
+      const newSong = yield call(createSongAPI, action.payload);
+      yield put(addSongSuccess(newSong.data));
+    } else {
+      yield put(addSongFailure('Add song action payload is missing'));
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      yield put(addSongFailure(error.message));
+    } else {
+      yield put(addSongFailure('An unknown error occurred'));
+    }
+  }
 }
 
-export function* createUserSaga(action: any): Generator<any, void, unknown> {
-  yield createSongAPI(action.song);
-  yield put(addSongSlice(action.song));
+function* handleEditSong(action: ReturnType<typeof updateSongStart>): Generator<any, void, any> {
+  try {
+    if (action.payload && action.payload.id && action.payload.updatedSong) {
+      const updatedSong = yield call(updateSongAPI, action.payload.id, action.payload.updatedSong);
+      yield put(updateSongSuccess(updatedSong.data));
+    } else {
+      yield put(updateSongFailure('Edit action payload is missing or incomplete'));
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      yield put(updateSongFailure(error.message));
+    } else {
+      yield put(updateSongFailure('An unknown error occurred'));
+    }
+  }
 }
 
-export function* updateUserSaga(action: any): Generator<any, void, unknown> {
-  yield updateSongAPI(action.id, action.song);
-  yield put(editSongSlice(action.song));
+function* handleGetSongs(): Generator<any, void, any> {
+  try {
+    const songs = yield call(getSongsAPI);
+    yield put(getSongsSuccess(songs.data));
+  } catch (error) {
+    if (error instanceof Error) {
+      yield put(getSongsFailure(error.message));
+    } else {
+      yield put(getSongsFailure('An unknown error occurred'));
+    }
+  }
 }
 
-export function* deleteUserByIdSaga(
-  action: any
-): Generator<any, void, unknown> {
-  yield deleteSongByIdAPI(action.id);
-  yield put(deleteSongSlice(action.id));
+function* watchDeleteSong() {
+  yield takeLatest(deleteSongStart.type, handleDeleteSong);
 }
 
-export function* watchSongsAsync(): Generator<any, void, unknown> {
-  yield takeEvery(GET_SONGS, getUsersSaga);
-  yield takeEvery(GET_SONG_BY_ID, getUserByIdSaga);
-  yield takeEvery(CREATE_SONG, createUserSaga);
-  yield takeEvery(UPDATE_SONG_BY_ID, updateUserSaga);
-  yield takeEvery(DELETE_SONG_BY_ID, deleteUserByIdSaga);
+function* watchAddSong() {
+  yield takeLatest(addSongStart.type, handleAddSong);
+}
+
+function* watchEditSong() {
+  yield takeLatest(updateSongStart.type, handleEditSong);
+}
+
+function* watchGetSongs() {
+  yield takeLatest(getSongsStart.type, handleGetSongs);
+}
+
+export default function* songSaga() {
+  yield all([
+    watchDeleteSong(),
+    watchAddSong(),
+    watchEditSong(),
+    watchGetSongs(),
+  ]);
 }
