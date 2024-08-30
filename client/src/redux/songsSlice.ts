@@ -61,6 +61,7 @@ const songsSlice = createSlice({
     updateSongStart(state, action: PayloadAction<UpdateSongPayload>) { 
       state.loading = true;
       state.error = null;
+      console.log(action.payload)
     },
     updateSongSuccess(state, action: PayloadAction<Song>) {
       state.loading = false;
@@ -88,7 +89,7 @@ export const {
   deleteSongStart,
   deleteSongSuccess,
   deleteSongFailure,
-  updateSongStart,  
+  updateSongStart, 
   updateSongSuccess,
   updateSongFailure,
 } = songsSlice.actions;

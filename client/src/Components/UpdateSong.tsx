@@ -106,11 +106,11 @@ const UpdateSong: React.FC<UpdateSongProps> = ({ song, onClose, onSave }) => {
       alert("Title and Artist are required");
       return;
     }
+    const updatedSong = { ...song, title, artist, album, genre };
 
-    dispatch(updateSongStart());
+    dispatch(updateSongStart({ id: song._id, updatedSong: updatedSong }));
 
     try {
-      const updatedSong = { ...song, title, artist, album, genre };
       const response = await updateSongAPI(song._id, updatedSong);
       dispatch(updateSongSuccess(response.data));
       onClose();
