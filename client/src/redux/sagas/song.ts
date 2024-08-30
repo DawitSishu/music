@@ -18,7 +18,7 @@ import {
   GET_SONGS,
   GET_SONG_BY_ID,
   UPDATE_SONG_BY_ID,
-} from "../../services/SongTypes";
+} from "../../Types/SongTypes";
 import { put, takeEvery } from "redux-saga/effects";
 
 export function* getUsersSaga(): Generator<any, void, unknown> {

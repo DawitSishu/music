@@ -29,9 +29,8 @@ import {
   deleteSongFailure,
 } from "../redux/songsSlice";
 import { RootState } from "../redux/store";
-import { Song } from "../services/SongTypes";
+import { Song } from "../Types/SongTypes";
 
-// Container for the entire song list
 const SongContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -45,7 +44,6 @@ const SongContainer = styled.div`
   margin: auto;
 `;
 
-// Top controls container
 const ControlsContainer = styled.div`
   display: flex;
   justify-content: space-between;
@@ -53,7 +51,6 @@ const ControlsContainer = styled.div`
   margin-bottom: 1.5rem;
 `;
 
-// Search input styling
 const SearchInput = styled(TextField)`
   background-color: #333;
   border-radius: 5px;
@@ -65,7 +62,6 @@ const SearchInput = styled(TextField)`
   }
 `;
 
-// Genre filter styling
 const GenreFilter = styled(FormControl)`
   min-width: 150px;
   margin-left: 1rem;
@@ -80,7 +76,6 @@ const GenreFilter = styled(FormControl)`
   }
 `;
 
-// Button to create a new song
 const CreateGenreButton = styled(Button)`
   color: #000;
   background-color: #efcfa9;
@@ -89,7 +84,6 @@ const CreateGenreButton = styled(Button)`
   }
 `;
 
-// Individual song item container
 const SongItem = styled.div`
   display: flex;
   align-items: center;
@@ -109,14 +103,12 @@ const SongItem = styled.div`
   }
 `;
 
-// Song icon styling
 const SongIcon = styled(MusicNoteIcon)`
   color: #efcfa9;
   margin-right: 1.5rem;
   font-size: 2rem;
 `;
 
-// Song title styling
 const SongTitle = styled.h3`
   margin: 0;
   font-size: 1.25rem;
@@ -124,7 +116,6 @@ const SongTitle = styled.h3`
   font-weight: 500;
 `;
 
-// Song artist styling
 const SongArtist = styled.p`
   margin: 0.25rem 0;
   font-size: 1rem;
@@ -132,14 +123,12 @@ const SongArtist = styled.p`
   font-weight: 400;
 `;
 
-// Genre and album styling
 const SongDetails = styled.p`
   margin: 0;
   font-size: 0.9rem;
   color: #999;
 `;
 
-// Song details container
 const SongInfoContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -152,7 +141,6 @@ const SongActions = styled.div`
   gap: 0.5rem;
 `;
 
-// Pagination container
 const PaginationContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -170,7 +158,6 @@ const PageInfo = styled.span`
   margin: 0 1rem;
 `;
 
-// Loader container to center the spinner
 const LoaderContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -241,12 +228,12 @@ const SongList: React.FC<{ onSongChange: () => void }> = ({ onSongChange }) => {
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
-    setCurrentPage(1); // Reset to first page on search
+    setCurrentPage(1); 
   };
 
   const handleGenreFilterChange = (event: SelectChangeEvent<string>) => {
     setGenreFilter(event.target.value as string);
-    setCurrentPage(1); // Reset to first page on filter change
+    setCurrentPage(1); 
   };
 
   const filteredSongs = songs.songs.filter((song: Song) => {
@@ -305,7 +292,7 @@ const SongList: React.FC<{ onSongChange: () => void }> = ({ onSongChange }) => {
             Create Song
           </CreateGenreButton>
         </ControlsContainer>
-        {currentSongs.map((song, index) => (
+        {currentSongs.reverse().map((song, index) => (
           <SongItem key={index}>
             <SongIcon />
             <SongInfoContainer>

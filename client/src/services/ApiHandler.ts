@@ -1,7 +1,7 @@
 import axios from "axios";
-import { Song } from "./SongTypes";
+import { Song } from "../Types/SongTypes";
 
-axios.defaults.baseURL = "http://localhost:5000/api/songs";
+axios.defaults.baseURL = "https://music-5v00.onrender.com/api/songs";
 
 export const getSongsAPI = async () => axios.get("/");
 

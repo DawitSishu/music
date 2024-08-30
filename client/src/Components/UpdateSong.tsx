@@ -24,9 +24,8 @@ import {
 } from "../redux/songsSlice";
 import { updateSongAPI } from "../services/ApiHandler";
 import { RootState } from "../redux/store";
-import { Song } from "../services/SongTypes";
+import { Song } from "../Types/SongTypes";
 
-// Styled container for the form, inheriting styles from CreateSong
 const PopupContainer = styled(Box)`
   position: absolute;
   top: 50%;
